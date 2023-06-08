@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.jsp.project.Response.ResponseStructure;
@@ -18,63 +19,48 @@ public class UserService {
 	@Autowired
 	private User user;
 
-	public User Saveuser(User user) {
-		return userdao.Saveuser(user);
+	public ResponseEntity<ResponseStructure<User>> saveUser(User user2) {
+
+		ResponseStructure<User> responseStructure = new ResponseStructure<>();
+		responseStructure.setPostNo(HttpStatus.CREATED.value());
+		responseStructure.setMessage("User Created");
+		responseStructure.setData(userdao.Saveuser(user2));
+		return new ResponseEntity<ResponseStructure<User>>(responseStructure, HttpStatus.CREATED);
 	}
 
-	public List<User> Getuser() {
-		return userdao.Getuser();
+	public ResponseEntity<ResponseStructure<User>> Getuser() {
+		ResponseStructure<User> responseStructure = new ResponseStructure<>();
+		responseStructure.setPostNo(HttpStatus.OK.value());
+		responseStructure.setMessage("Data Fetched Successfully");
+		responseStructure.setData(userdao.Getuser());
+		return new ResponseEntity<ResponseStructure<User>>(responseStructure, HttpStatus.OK);
 	}
 
-	public ResponseStructure<User> findById(int u_id) {
+	public ResponseEntity<ResponseStructure<User>> FindById(int id) {
 
 		ResponseStructure<User> responseStructure = new ResponseStructure<>();
 		responseStructure.setPostNo(HttpStatus.OK.value());
-		responseStructure.setMessage("User Finede");
-		responseStructure.setData(userdao.findById(u_id));
-		return responseStructure;
-
+		responseStructure.setMessage("Data Fetched Successfully");
+		responseStructure.setData(userdao.FindById(id));
+		return new ResponseEntity<ResponseStructure<User>>(responseStructure, HttpStatus.OK);
 	}
 
-	public ResponseStructure<User> updateUser(int u_id, User user) {
-
+	public ResponseEntity<ResponseStructure<User>> updateUser(int id, User user2) {
 		ResponseStructure<User> responseStructure = new ResponseStructure<>();
 		responseStructure.setPostNo(HttpStatus.OK.value());
-		responseStructure.setMessage("Update Done");
-		responseStructure.setData(userdao.updateUser(u_id, user));
-		return responseStructure;
+		responseStructure.setMessage("Data Updated");
+		responseStructure.setData(userdao.updateUser(id, user2));
 
+		return new ResponseEntity<ResponseStructure<User>>(responseStructure, HttpStatus.OK);
 	}
 
-	public ResponseStructure<User> deleteUser(int u_id) {
-
+	public ResponseEntity<ResponseStructure<User>> deleteUser(int id) {
 		ResponseStructure<User> responseStructure = new ResponseStructure<>();
 		responseStructure.setPostNo(HttpStatus.OK.value());
-		responseStructure.setMessage("Deleted ");
-		responseStructure.setData(userdao.deleteUser(u_id));
-		return responseStructure;
+		responseStructure.setMessage("Data Deleted");
+		responseStructure.setData(userdao.deleteUser(id));
 
-	}
-
-	public ResponseStructure<User> fetchByEmail(String u_email, String u_password) {
-
-		User user2 = userdao.findbyEmail(u_email);
-		if(u_password.equals(user.getU_password()))
-		{
-			ResponseStructure<User> responseStructure = new ResponseStructure<>();
-			responseStructure.setPostNo(HttpStatus.FOUND.value());
-			responseStructure.setMessage("Fetching Done");
-			responseStructure.setData(userdao.findbyEmail(u_email));
-			return responseStructure;
-		}
-		else
-		{
-			ResponseStructure<User> responseStructure = new ResponseStructure<>();
-			responseStructure.setPostNo(HttpStatus.NOT_FOUND.value());
-			responseStructure.setMessage("USER NOT FOUND");
-			return responseStructure;
-		}
-
+		return new ResponseEntity<ResponseStructure<User>>(responseStructure, HttpStatus.OK);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Repository;
 
+import com.jsp.project.Exception.UserIdNotPresentException;
 import com.jsp.project.dto.User;
 import com.jsp.project.repo.UserRepo;
 
@@ -22,45 +23,35 @@ public class Userdao {
 	}
 
 	public List<User> Getuser() {
+
 		return userRepo.findAll();
 	}
 
-	public User findById(int u_id) {
+	public User FindById(int id) {
 
-		Optional<User> optional = userRepo.findById(u_id);
-
-		return optional.get();
-	}
-
-	public User updateUser(int u_id, User user) {
-		Optional<User> optional = userRepo.findById(u_id);
-		if (optional.isPresent()) {
-			user.setU_id(u_id);
-			return userRepo.save(user);
+		Optional<User> findById = userRepo.findById(id);
+		if (findById.isPresent()) {
+			return findById.get();
 		}
-		return null;
+		throw new UserIdNotPresentException("Invalid Id");
 	}
 
-	public User deleteUser(int u_id) {
-		Optional<User> optional = userRepo.findById(u_id);
-		if (optional.isPresent()) {
-			userRepo.deleteById(u_id);
-			return optional.get();
+	public User updateUser(int id, User user2) {
+
+		Optional<User> findById = userRepo.findById(id);
+		if (findById.isPresent()) {
+			return userRepo.save(user2);
 		}
-		return null;
+		throw new UserIdNotPresentException("Invalid Id");
 	}
 
-	public User findbyEmail(String u_email) {
-		
-		
-			User user = userRepo.findbyEmail(u_email);
-			if(user!=null)
-			{
-			return user;
-			}
-			return null;
-	
-
+	public User deleteUser(int id) {
+		Optional<User> findById = userRepo.findById(id);
+		if (findById.isPresent()) {
+			userRepo.deleteById(id);
+			return findById.get();
+		}
+		throw new UserIdNotPresentException("Invalid Id");
 	}
 
 }
